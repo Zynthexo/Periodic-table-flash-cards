@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Element Quiz App</title>
+
+<style>
+body { font-family: Arial; text-align: center; background:#eef2f7; }
+
+.card {
+  width: 350px; height: 260px;
+  margin: 30px auto;
+  perspective: 1000px;
+  cursor: pointer;
+}
+
+.inner {
+  width:100%; height:100%;
+  transition:0.6s;
+  transform-style: preserve-3d;
+  position:relative;
+}
+
+.card.flip .inner { transform: rotateY(180deg); }
+
+.front, .back {
+  position:absolute;
+  width:100%; height:100%;
+  border-radius:15px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  padding:15px;
+  backface-visibility:hidden;
+  color:white;
+}
+
+.front { font-size:45px; font-weight:bold; }
+.back { transform: rotateY(180deg); font-size:14px; }
+
+/* colors */
+.metal { background:#2196F3; }
+.nonmetal { background:#4CAF50; }
+.metalloid { background:#FFC107; color:black; }
+.noble { background:#9C27B0; }
+
+input { padding:8px; margin:10px; width:200px; }
+
+button { padding:8px 15px; margin:5px; cursor:pointer; }
+
+.score { font-size:18px; margin-top:10px; }
+</style>
+</head>
+
+<body>
+
+<h2>🧪 Element Quiz Mode</h2>
+<p>See symbol → type element name → check answer</p>
+
+<div class="card" onclick="flipCard()">
+  <div class="inner">
+    <div id="front" class="front"></div>
+    <div id="back" class="back"></div>
+  </div>
+</div>
+
+<input id="answer" placeholder="Enter element name">
+<br>
+<button onclick="checkAnswer()">Check</button>
+<button onclick="nextCard()">Next</button>
+
+<div class="score">Score: <span id="score">0</span> / <span id="total">0</span></div>
+
+<script>
+let score = 0;
+let total = 0;
+
+let cards = [
+{sym:"H", name:"Hydrogen", num:1, val:1, type:"nonmetal", neut:0, react:"Highly reactive", use:"Fuel, water"},
+{sym:"He", name:"Helium", num:2, val:2, type:"noble", neut:2, react:"Inert", use:"Balloons"},
+{sym:"Li", name:"Lithium", num:3, val:1, type:"metal", neut:4, react:"Reactive", use:"Batteries"},
+{sym:"Be", name:"Beryllium", num:4, val:2, type:"metal", neut:5, react:"Moderate", use:"Alloys"},
+{sym:"B", name:"Boron", num:5, val:3, type:"metalloid", neut:6, react:"Low", use:"Glass"},
+{sym:"C", name:"Carbon", num:6, val:4, type:"nonmetal", neut:6, react:"Varies", use:"Life element"},
+{sym:"N", name:"Nitrogen", num:7, val:5, type:"nonmetal", neut:7, react:"Low", use:"Fertilizers"},
+{sym:"O", name:"Oxygen", num:8, val:6, type:"nonmetal", neut:8, react:"Highly reactive", use:"Breathing"},
+{sym:"F", name:"Fluorine", num:9, val:7, type:"nonmetal", neut:10, react:"Very reactive", use:"Toothpaste"},
+{sym:"Ne", name:"Neon", num:10, val:8, type:"noble", neut:10, react:"Inert", use:"Lights"},
+{sym:"Na", name:"Sodium", num:11, val:1, type:"metal", neut:12, react:"Very reactive", use:"Salt"},
+{sym:"Mg", name:"Magnesium", num:12, val:2, type:"metal", neut:12, react:"Reactive", use:"Fireworks"},
+{sym:"Al", name:"Aluminium", num:13, val:3, type:"metal", neut:14, react:"Moderate", use:"Foil"},
+{sym:"Si", name:"Silicon", num:14, val:4, type:"metalloid", neut:14, react:"Low", use:"Chips"},
+{sym:"P", name:"Phosphorus", num:15, val:5, type:"nonmetal", neut:16, react:"Reactive", use:"Matches"},
+{sym:"S", name:"Sulfur", num:16, val:6, type:"nonmetal", neut:16, react:"Moderate", use:"Medicine"},
+{sym:"Cl", name:"Chlorine", num:17, val:7, type:"nonmetal", neut:18, react:"Highly reactive", use:"Water cleaning"},
+{sym:"Ar", name:"Argon", num:18, val:8, type:"noble", neut:22, react:"Inert", use:"Bulbs"},
+{sym:"K", name:"Potassium", num:19, val:1, type:"metal", neut:20, react:"Very reactive", use:"Fertilizer"},
+{sym:"Ca", name:"Calcium", num:20, val:2, type:"metal", neut:20, react:"Reactive", use:"Bones"}
+];
+
+let i = 0;
+
+function showCard(){
+  let c = cards[i];
+  document.getElementById("front").innerText = c.sym;
+  document.getElementById("front").className = "front " + c.type;
+  document.getElementById("back").className = "back " + c.type;
+
+  document.getElementById("back").innerHTML = `
+  <b>${c.name}</b><br>
+  Atomic No: ${c.num}<br>
+  Protons/Electrons: ${c.num}<br>
+  Neutrons: ${c.neut}<br>
+  Valence: ${c.val}<br>
+  Type: ${c.type}<br>
+  Reactivity: ${c.react}<br>
+  Use: ${c.use}
+  `;
+
+  document.querySelector(".card").classList.remove("flip");
+}
+
+function flipCard(){
+  document.querySelector(".card").classList.toggle("flip");
+}
+
+function checkAnswer(){
+  let user = document.getElementById("answer").value.toLowerCase();
+  let correctAns = cards[i].name.toLowerCase();
+
+  total++;
+
+  if(user === correctAns){
+    score++;
+    new Audio("https://www.soundjay.com/buttons/sounds/button-3.mp3").play();
+  } else {
+    new Audio("https://www.soundjay.com/buttons/sounds/button-10.mp3").play();
+  }
+
+  document.getElementById("score").innerText = score;
+  document.getElementById("total").innerText = total;
+}
+
+function nextCard(){
+  i = (i+1) % cards.length;
+  document.getElementById("answer").value = "";
+  showCard();
+}
+
+showCard();
+</script>
+
+</body>
+</html>
